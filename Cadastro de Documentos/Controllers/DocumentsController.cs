@@ -18,15 +18,7 @@ namespace Cadastro_de_Documentos.Controllers
         {
             _context = context;
         }
-
-        // GET: Documents
-        //public async Task<IActionResult> Index()
-        //{
-        //      return _context.Documents != null ? 
-        //                  View(await _context.Documents.ToListAsync()) :
-        //                  Problem("Entity set 'Context.Documents'  is null.");
-        //}
-
+               
         public IActionResult Index()
         {
             var documents = _context.Documents.ToList();
@@ -56,15 +48,9 @@ namespace Cadastro_de_Documentos.Controllers
                     workSheet.Cells[i + 2, 3].Value = documents[i].Revision;
                     workSheet.Cells[i + 2, 4].Value = documents[i].Date.ToString("yyyy-MM-dd");
                 }
-
-                // Remove quaisquer hiperlinks presentes nas células
-                foreach (var cell in workSheet.Cells)
-                {
-                    cell.Hyperlink = null;
-                }
-
+                               
                 // Converte o conteúdo para um array de bytes
-                var excelBytes = package.GetAsByteArray();                 
+                var excelBytes = package.GetAsByteArray();
 
                 // Retorna o arquivo Excel para download
                 return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DocumentData.xlsx");
@@ -134,7 +120,8 @@ namespace Cadastro_de_Documentos.Controllers
         // POST: Documents/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]        
+        [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Code,Revision,Date")] Document document)
         {
@@ -201,14 +188,14 @@ namespace Cadastro_de_Documentos.Controllers
             {
                 _context.Documents.Remove(document);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentExists(int id)
         {
-          return (_context.Documents?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Documents?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
